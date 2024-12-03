@@ -2,45 +2,34 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.textfield.TextInputLayout;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginScreen extends AppCompatActivity {
     TextInputLayout inputEmail, inputPassword;
-    Button btnLogin;
+    Button btnLogin, btnGoogle;
     TextView singup,erro;
     LoadingDialog loadingDialalog;
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +40,7 @@ public class LoginScreen extends AppCompatActivity {
         inputEmail = findViewById(R.id.textInputLayout3);
         inputPassword = findViewById(R.id.textInputLayout2);
         singup = findViewById(R.id.titleRegister);
+        btnGoogle = findViewById(R.id.btnGoogle);
         LoadingDialog loadingDialalog = new LoadingDialog(LoginScreen.this);
 
         singup.setOnClickListener(new View.OnClickListener() {
@@ -60,104 +50,129 @@ public class LoginScreen extends AppCompatActivity {
             }
         });
 
+        btnGoogle = findViewById(R.id.btnGoogle);
 
-        inputEmail.getEditText().addTextChangedListener(new TextWatcher() {
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()==0){
-                    inputEmail.setError("Chưa nhập địa chỉ email");
-                    inputEmail.setErrorEnabled(true);
-                }
-                else{
-                    inputEmail.setError(null);
-                    inputEmail.setErrorEnabled(false);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+            public void onClick(View v) {
+                signIn();
             }
         });
-        inputPassword.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()==0){
-                    inputPassword.setError("Chưa nhập mật khẩu");
-                    inputPassword.setErrorEnabled(true);
-                }
-                else{
-                    inputPassword.setError(null);
-                    inputPassword.setErrorEnabled(false);
-                }
-            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = inputEmail.getEditText().getText().toString().trim();
                 String pass = inputPassword.getEditText().getText().toString().trim();
-                boolean test =true;
-                if (email.isEmpty()) {
-                    inputEmail.setErrorEnabled(true);
-                    inputEmail.setError("Chưa nhập địa chỉ email");
-                    test=false;
-                }
-                if (pass.isEmpty()) {
-                    inputPassword.setErrorEnabled(true);
-                    inputPassword.setError("Chưa nhập mật khẩu");
-                    test=false;
-                }
-                if (test==true){
-                    loadingDialalog.ShowDialog("Đang tải...");
-                    LoginRequest loginRequest = new LoginRequest();
-                    loginRequest.setEmail(email);
-                    loginRequest.setPassword(pass);
-                    loginUser(loginRequest);
 
+                if (!validateUsername() | !validatePassword()) {
+                } else {
+                    checkUser();
                 }
             }
         });
     }
-    public void loginUser(LoginRequest loginRequest){
-        Call<LoginRespond> loginResponCall = ApiClient.getService().loginRespon(loginRequest);
-        loginResponCall.enqueue(new Callback<LoginRespond>() {
-            @Override
-            public void onResponse(Call<LoginRespond> call, Response<LoginRespond> response) {
-                if (response.isSuccessful()){
-                    LoginRespond loginRespon=response.body();
-                    startActivity(new Intent(LoginScreen.this,MainActivity.class).putExtra("data",loginRespon));
-                    finish();
+    public Boolean validateUsername() {
+        String val = inputEmail.getEditText().getText().toString().trim();
+        if (val.isEmpty()) {
+            inputEmail.setError("Chưa nhập địa chỉ email");
+            return false;
+        } else {
+            inputEmail.setError(null);
+            return true;
+        }
+    }
+    public Boolean validatePassword(){
+        String val = inputPassword.getEditText().getText().toString();
+        if (val.isEmpty()) {
+            inputPassword.setError("Chưa nhập mật khẩu");
+            return false;
+        } else {
+            inputPassword.setError(null);
+            return true;
+        }
+    }
 
-                }else{
-                    String message =  "Tài khoản đã tồn tại";
-                    erro = findViewById(R.id.erroSignin);
-                    erro.setText(message);
-                    loadingDialalog.HideDialog();
+    public void checkUser(){
+        String userEmail = inputEmail.getEditText().getText().toString().trim();
+        String userPassword = inputPassword.getEditText().getText().toString().trim();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isUserFound = false;
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String emailFromDB = snapshot.child("email").getValue(String.class);
+                    String passwordFromDB = snapshot.child("pass").getValue(String.class);
+
+                    if (emailFromDB != null && emailFromDB.equals(userEmail)) {
+                        isUserFound = true;
+                        if (passwordFromDB != null && passwordFromDB.equals(userPassword)) {
+
+                            String nameFromDB = snapshot.child("name").getValue(String.class);
+                            String usernameFromDB = snapshot.child("username").getValue(String.class);
+
+                            Toast.makeText(LoginScreen.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(LoginScreen.this, UserActivity.class);
+                            intent.putExtra("name", nameFromDB);
+                            intent.putExtra("username", usernameFromDB);
+                            intent.putExtra("email", emailFromDB);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // Mật khẩu sai
+                            Toast.makeText(LoginScreen.this, "Sai mật khẩu!", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    }
+                }
+
+                if (!isUserFound) {
+                    // Tài khoản không tồn tại
+                    Toast.makeText(LoginScreen.this, "Email không tồn tại!", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginRespond> call, Throwable t) {
-
-                String message= t.getLocalizedMessage();
-                Toast.makeText(LoginScreen.this,message,Toast.LENGTH_LONG).show();
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Lỗi kết nối cơ sở dữ liệu
+                Toast.makeText(LoginScreen.this, "Lỗi kết nối với cơ sở dữ liệu!", Toast.LENGTH_SHORT).show();
             }
         });
+        }
+
+        void signIn(){
+            Intent signInIntent = gsc.getSignInIntent();
+            startActivityForResult(signInIntent,1000);
+        }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                task.getResult(ApiException.class);
+                navigateToSecondActivity();
+            } catch (ApiException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+    void navigateToSecondActivity(){
+        finish();
+        Intent intent = new Intent(LoginScreen.this, UserActivity.class);
+        startActivity(intent);
     }
 }
