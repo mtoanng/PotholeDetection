@@ -1,57 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background1"
-    tools:context=".User">
+    tools:context=".RegisterScreen">
 
-    <TextView
-        android:id="@+id/tvWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome"
-        android:textSize="34sp"
-        android:textColor="@color/black"
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="151dp"
+        android:layout_height="122dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        android:layout_marginTop="50dp" />
+        app:layout_constraintVertical_bias="0.15"
+        app:srcCompat="@drawable/logo" />
 
+    <!-- Profile Title -->
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="34sp"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcome"
+        android:fontFamily="@font/baloo_tamma"
+        android:text="Xin chào"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp" />
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout4"
+        app:layout_constraintVertical_bias="0.05" />
 
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="wrap_content"
+    <!-- Input Fields -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout4"
+        android:layout_width="406dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="20dp"
+        android:textColorHint="#00FFFFFF"
+        app:boxBackgroundColor="#00FFFFFF"
+        app:boxStrokeColor="#00FFFFFF"
+        app:boxStrokeErrorColor="#00FFFFFF"
+        app:errorEnabled="false"
+        app:errorTextColor="#FF007A"
+        app:hintAnimationEnabled="false"
+        app:hintEnabled="false"
+        app:hintTextColor="#00FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_bg"
+            android:drawableStart="@drawable/ic_baseline_person_24"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/baloo_paaji_2"
+            android:hint="Username"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHighlight="#00BCD4"
+            android:textColorHint="#FFFFFF"
+            app:errorEnabled="false"
+            app:hintAnimationEnabled="false"
+            app:hintEnabled="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout8"
+        android:layout_width="0dp"
+        android:textColorHint="#FFFFFF"
         android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout4"
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayout4">
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_bg"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawablePadding="10dp"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/signout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Sign Out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginTop="232dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/gradiant_end_color"
+        android:padding="16dp"
+        android:text="Đăng xuất"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="147dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
