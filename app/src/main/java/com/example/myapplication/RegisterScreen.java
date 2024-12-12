@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.databinding.ActivityRegisterScreenBinding ;
+import com.example.myapplication.DBHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import android.content.Intent;
@@ -13,19 +14,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterScreen extends AppCompatActivity {
     TextView titleSignin, erro;
     TextInputLayout inputLastName, inputName, inputUserName, inputEmail, inputPassWord, inputComformPassWord;
     Button btnReg;
     LoadingDialog loadingDialalog;
-    FirebaseDatabase database;
-    DatabaseReference reference;
+//    FirebaseDatabase database;
+//    DatabaseReference reference;
     ActivityRegisterScreenBinding  binding;
+    DBHelper DB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class RegisterScreen extends AppCompatActivity {
 
         binding = ActivityRegisterScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        DB = new DBHelper(this);
 
         titleSignin = findViewById(R.id.titleLogin);
         btnReg = findViewById(R.id.btnRegister);
@@ -202,13 +204,11 @@ public class RegisterScreen extends AppCompatActivity {
             }
         });
 
-        binding.btnRegister.setOnClickListener(new View.OnClickListener() {
+
+        btnReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database = FirebaseDatabase.getInstance();
-                reference = database.getReference("Users");
-
-                boolean test = true;
+//                boolean test = true;
                 String lastname = inputLastName.getEditText().getText().toString().trim();
                 String name = inputName.getEditText().getText().toString().trim();
                 String username = inputUserName.getEditText().getText().toString().trim();
@@ -216,24 +216,25 @@ public class RegisterScreen extends AppCompatActivity {
                 String pass = inputPassWord.getEditText().getText().toString().trim();
                 String comfomPass = inputComformPassWord.getEditText().getText().toString().trim();
 
-                if (!name.isEmpty() && !lastname.isEmpty() && !username.isEmpty() && !email.isEmpty() && !comfomPass.isEmpty() && !pass.isEmpty()) {
-
-                    Users users = new Users(name, lastname, username, email, pass, comfomPass);
-                    reference.child(username).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            binding.inFirstNameR.setText("");
-                            binding.name.setText("");
-                            binding.userName.setText("");
-                            binding.email.setText("");
-                            binding.password.setText("");
-                            Toast.makeText(RegisterScreen.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterScreen.this, LoginScreen.class);
-                            startActivity(intent);
+                if (pass.equals(comfomPass)) {
+//                        Boolean checkuser = DB.checkusername(email);
+//                        if (checkuser == false) {
+                            Boolean insert = DB.insertUserData(name, lastname, username, email, pass, comfomPass);
+//                            if (insert == true) {
+                                Toast.makeText(RegisterScreen.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RegisterScreen.this, LoginScreen.class);
+                                startActivity(intent);
+//                            } else {
+//                                Toast.makeText(RegisterScreen.this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
+//                            }}
+//                            else{
+//                                Toast.makeText(RegisterScreen.this, "Tài khoản đã tồn tại", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+//                                startActivity(intent);
+//                            }
                         }
-                    });
-                }
+                    }
             }
-            });
+        );
     }
 }
