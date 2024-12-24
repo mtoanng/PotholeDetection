@@ -140,7 +140,7 @@ public class LoginScreen extends AppCompatActivity {
 //
 //                            Toast.makeText(LoginScreen.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 //
-//                            Intent intent = new Intent(LoginScreen.this, UserActivity.class);
+//                            Intent intent = new Intent(LoginScreen.this, Dashboard.class);
 //                            intent.putExtra("name", nameFromDB);
 //                            intent.putExtra("username", usernameFromDB);
 //                            intent.putExtra("email", emailFromDB);
