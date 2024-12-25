@@ -198,8 +198,8 @@ public class PotholeActivity extends AppCompatActivity implements SensorEventLis
     private PotholeSeverity getPotholeSeverity(float x, float y, float z) {
         // Define thresholds for different severity levels
         final float LIGHT_THRESHOLD = 10.0f; // Adjust based on calibration
-        final float MEDIUM_THRESHOLD = 17.0f; // Adjust based on calibration
-        final float HARD_THRESHOLD = 25.0f; // Adjust based on calibration
+        final float MEDIUM_THRESHOLD = 15.0f; // Adjust based on calibration
+        final float HARD_THRESHOLD = 20.0f; // Adjust based on calibration
 
         // Calculate the magnitude of the acceleration
         float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
