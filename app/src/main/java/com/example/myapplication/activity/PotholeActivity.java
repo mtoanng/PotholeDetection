@@ -176,13 +176,47 @@ public class PotholeActivity extends AppCompatActivity implements SensorEventLis
 
     private boolean isPotholeDetected(float x, float y, float z) {
         // Adjust these thresholds based on your testing and calibration
-        float threshold = 10.0f; // Adjust this threshold as needed
+        //float threshold = 10.0f; // Adjust this threshold as needed
+
+        // Calculate the magnitude of the acceleration
+        //float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+
+        // Check if the magnitude exceeds the threshold
+            float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+            float deviation = Math.abs(magnitude - SensorManager.GRAVITY_EARTH);
+
+        // Dynamic threshold based on testing
+            float potholeThreshold = 15.0f; 
+        return deviation > potholeThreshold
+        //return magnitude > threshold;
+    }
+
+    public enum PotholeSeverity {
+        NONE, LIGHT, MEDIUM, HARD
+    }
+
+    private PotholeSeverity getPotholeSeverity(float x, float y, float z) {
+        // Define thresholds for different severity levels
+        final float LIGHT_THRESHOLD = 10.0f; // Adjust based on calibration
+        final float MEDIUM_THRESHOLD = 17.0f; // Adjust based on calibration
+        final float HARD_THRESHOLD = 25.0f; // Adjust based on calibration
 
         // Calculate the magnitude of the acceleration
         float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
 
-        // Check if the magnitude exceeds the threshold
-        return magnitude > threshold;
+        // Calculate deviation from gravity
+        float deviation = Math.abs(magnitude - SensorManager.GRAVITY_EARTH);
+
+        // Determine severity level
+        if (deviation > HARD_THRESHOLD) {
+            return PotholeSeverity.HARD;
+        } else if (deviation > MEDIUM_THRESHOLD) {
+            return PotholeSeverity.MEDIUM;
+        } else if (deviation > LIGHT_THRESHOLD) {
+            return PotholeSeverity.LIGHT;
+        } else {
+            return PotholeSeverity.NONE; // No significant pothole detected
+        }
     }
 
     private void uploadPotholeData(PotholeData potholeData) {
