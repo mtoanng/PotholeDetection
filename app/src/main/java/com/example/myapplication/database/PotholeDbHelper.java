@@ -99,4 +99,13 @@ public class PotholeDbHelper extends SQLiteOpenHelper {
         db.close();
         return rowsAffected > 0;
     }
+    /**
+     * Delete all records from the database.
+     */
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.close();
+    }
+
 }
