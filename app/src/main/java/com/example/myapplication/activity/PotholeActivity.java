@@ -1,4 +1,4 @@
-package com.example.myapplication.ui;
+package com.example.myapplication.activity;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.myapplication.LoginScreen;
 import com.example.myapplication.R;
+import com.example.myapplication.Toan.BottomNavigationActivity;
 import com.example.myapplication.database.PotholeData;
 import com.example.myapplication.database.PotholeDbHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,7 +32,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-public class PotholeActivity extends AppCompatActivity implements SensorEventListener, View.OnClickListener {
+public class PotholeActivity extends BottomNavigationActivity implements SensorEventListener, View.OnClickListener {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -68,7 +69,7 @@ public class PotholeActivity extends AppCompatActivity implements SensorEventLis
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         plotButton.setOnClickListener(v -> {
-            // Navigate to Map Screen
+            // Navigate to Map Screen to plot pothole on Map
 //            Intent intent = new Intent(PotholeActivity.this, MapViewScreen.class);
 //            startActivity(intent);
         });

@@ -82,6 +82,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -120,6 +121,12 @@ public class UserActivity extends AppCompatActivity {
             String personEmail = acct.getEmail();
             userName.setText(personName);
             emailUser.setText(personEmail);
+
+            SharedPreferences sharedPreferences = getSharedPreferences("UserInfo", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("userName", personName);
+            editor.putString("email", personEmail);
+            editor.apply();
         }
 
         DB = new DBHelper(this);
@@ -135,6 +142,12 @@ public class UserActivity extends AppCompatActivity {
 
                 userName.setText(userName1);
                 emailUser.setText(emailUser1);
+
+                SharedPreferences sharedPreferences = getSharedPreferences("UserInfo", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("userName", userName1);
+                editor.putString("email", emailUser1);
+                editor.apply();
             } else {
                 Toast.makeText(this, "No user data found", Toast.LENGTH_SHORT).show();
             }

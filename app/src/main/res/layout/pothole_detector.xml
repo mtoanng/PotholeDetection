@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PotholeDetectorActivity">
+    tools:context=".activity.PotholeActivity">
 
     <!-- Top section layout -->
     <LinearLayout
@@ -79,7 +79,7 @@
                 android:text="Not Recording"
                 android:textColor="#EB0303"
                 android:textSize="25dp">
-
+z
             </TextView>
 
         </LinearLayout>
@@ -130,19 +130,12 @@
 
 
     <!-- Navigation bar layout at the very bottom -->
-    <LinearLayout
-        android:id="@+id/nav_layout"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_weight="1">
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
-            app:menu="@menu/bottom_nav_menu" />
-    </LinearLayout>
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

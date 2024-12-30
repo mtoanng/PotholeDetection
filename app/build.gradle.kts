@@ -6,7 +6,7 @@ android {
     namespace = "com.example.myapplication"
     compileSdk = 34
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 
@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 34
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -41,11 +41,16 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(11)
+        }
+}}
 
 dependencies {
     implementation(libs.appcompat)
@@ -55,25 +60,32 @@ dependencies {
     implementation(libs.preference)
     implementation(libs.navigation.fragment)
     implementation(libs.play.services.location)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
+    // Networking libraries
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    implementation("com.airbnb.android:lottie:6.0.0")
-    implementation("org.projectlombok:lombok:1.18.28")
-    annotationProcessor("org.projectlombok:lombok:1.18.28")
-    implementation ("com.google.android.gms:play-services-auth:21.2.0")
-    implementation("com.google.oauth-client:google-oauth-client:1.34.1")
-    implementation("com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0")
-    implementation("com.google.oauth-client:google-oauth-client-java6:1.34.1")
-    implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
-    implementation ("com.google.android.gms:play-services-auth:21.2.0")
+
+    // Firebase Authentication
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-auth")
 
+    // Google OAuth and other dependencies
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev157-1.25.0")
+    implementation("com.google.oauth-client:google-oauth-client:1.34.1")
+    implementation("com.google.oauth-client:google-oauth-client-java6:1.34.1")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
 
+    // Lottie Animation
+    implementation("com.airbnb.android:lottie:6.0.0")
+
+    // Lombok (if necessary)
+    // implementation("org.projectlombok:lombok:1.18.30")
+    // annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
