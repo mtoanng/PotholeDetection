@@ -44,4 +44,59 @@ public class PotholeDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+    public boolean insertPothole(int userId, long timestamp, float xAcceleration, float yAcceleration,
+                                 float zAcceleration, double latitude, double longitude) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_USER_ID, userId);
+        values.put(COLUMN_TIMESTAMP, timestamp);
+        values.put(COLUMN_X_ACCELERATION, xAcceleration);
+        values.put(COLUMN_Y_ACCELERATION, yAcceleration);
+        values.put(COLUMN_Z_ACCELERATION, zAcceleration);
+        values.put(COLUMN_LATITUDE, latitude);
+        values.put(COLUMN_LONGITUDE, longitude);
+
+        long result = db.insert(TABLE_NAME, null, values);
+        db.close();
+        return result != -1; // Returns true if the insertion was successful
+    }
+         * Retrieve all pothole records from the database.
+     */
+    public List<String> getAllPotholes() {
+        List<String> potholeList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                int userId = cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ID));
+                long timestamp = cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP));
+                float xAcceleration = cursor.getFloat(cursor.getColumnIndex(COLUMN_X_ACCELERATION));
+                float yAcceleration = cursor.getFloat(cursor.getColumnIndex(COLUMN_Y_ACCELERATION));
+                float zAcceleration = cursor.getFloat(cursor.getColumnIndex(COLUMN_Z_ACCELERATION));
+                double latitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LATITUDE));
+                double longitude = cursor.getDouble(cursor.getColumnIndex(COLUMN_LONGITUDE));
+
+                potholeList.add("ID: " + id + ", User ID: " + userId + ", Timestamp: " + timestamp
+                        + ", Location: (" + latitude + ", " + longitude + ")");
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return potholeList;
+    }
+    /**
+     * Delete a specific pothole by its ID.
+     */
+    public boolean deletePotholeById(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(TABLE_NAME, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+        db.close();
+        return rowsAffected > 0;
+    }
 }
