@@ -173,51 +173,45 @@ public class PotholeActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not used
     }
+        private static final float HIGH_SENSITIVITY_THRESHOLD = 10.0f;
+        private static final float MEDIUM_SENSITIVITY_THRESHOLD = 15.0f;
+        private static final float LOW_SENSITIVITY_THRESHOLD = 20.0f;
 
-    private boolean isPotholeDetected(float x, float y, float z) {
-        // Adjust these thresholds based on your testing and calibration
-        //float threshold = 10.0f; // Adjust this threshold as needed
+        private SharedPreferences sharedPreferences;
 
-        // Calculate the magnitude of the acceleration
-        //float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+        public PotholeDetector(SharedPreferences sharedPreferences) {
+            this.sharedPreferences = sharedPreferences;
+        }
 
-        // Check if the magnitude exceeds the threshold
+        public boolean isPotholeDetected(float x, float y, float z) {
+            // Calculate magnitude and deviation
             float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
             float deviation = Math.abs(magnitude - SensorManager.GRAVITY_EARTH);
 
-        // Dynamic threshold based on testing
-            float potholeThreshold = 15.0f; 
-        return deviation > potholeThreshold
-        //return magnitude > threshold;
-    }
+            // Get sensitivity level from shared preferences
+            String sensitivityLevel = sharedPreferences.getString("sensitivity_level", "Medium");
+            float potholeThreshold = getThresholdBasedOnSensitivity(sensitivityLevel);
 
+            // Detect pothole based on deviation
+            return deviation > potholeThreshold;
+        }
+    private float getThresholdBasedOnSensitivity(String sensitivityLevel) {
+        switch (sensitivityLevel) {
+            case "High":
+                return HIGH_SENSITIVITY_THRESHOLD;
+            case "Medium":
+                return MEDIUM_SENSITIVITY_THRESHOLD;
+            case "Low":
+                return LOW_SENSITIVITY_THRESHOLD;
+            default:
+                // Fallback to medium threshold in case of an unknown sensitivity level
+                return MEDIUM_SENSITIVITY_THRESHOLD;
+        }
+    }
     public enum PotholeSeverity {
         NONE, LIGHT, MEDIUM, HARD
     }
 
-    private PotholeSeverity getPotholeSeverity(float x, float y, float z) {
-        // Define thresholds for different severity levels
-        final float LIGHT_THRESHOLD = 10.0f; // Adjust based on calibration
-        final float MEDIUM_THRESHOLD = 15.0f; // Adjust based on calibration
-        final float HARD_THRESHOLD = 20.0f; // Adjust based on calibration
-
-        // Calculate the magnitude of the acceleration
-        float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
-
-        // Calculate deviation from gravity
-        float deviation = Math.abs(magnitude - SensorManager.GRAVITY_EARTH);
-
-        // Determine severity level
-        if (deviation > HARD_THRESHOLD) {
-            return PotholeSeverity.HARD;
-        } else if (deviation > MEDIUM_THRESHOLD) {
-            return PotholeSeverity.MEDIUM;
-        } else if (deviation > LIGHT_THRESHOLD) {
-            return PotholeSeverity.LIGHT;
-        } else {
-            return PotholeSeverity.NONE; // No significant pothole detected
-        }
-    }
 
     private void uploadPotholeData(PotholeData potholeData) {
         PotholeDbHelper dbHelper = new PotholeDbHelper(this);
@@ -248,4 +242,24 @@ public class PotholeActivity extends AppCompatActivity implements SensorEventLis
             startLocationUpdates();  // Start location updates when the activity is resumed
         }
     }
+    [28/12/2024 15:16:38] Mạnh Toàn: SharedPreferences sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE);
+String sensitivityLevel = sharedPreferences.getString("sensitivity_level", "Medium");
+
+// Use the sensitivity level in your pothole detection logic
+switch (sensitivityLevel) {
+    case "High":
+        // Apply high sensitivity logic
+        break;
+    case "Medium":
+        // Apply medium sensitivity logic
+        break;
+    case "Low":
+        // Apply low sensitivity logic
+        break;
+    default:
+        // Default logic
+        break;
+}
+anh lấy cái mức sensivity ra bằng đoạn này nha
+
 }
