@@ -9,7 +9,7 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context ) {
-        super(context,"UserData",null, 1);
+        super(context,"potholeApp",null, 1);
     }
 
     @Override
